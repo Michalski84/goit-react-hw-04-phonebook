@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styles from './Form.module.css';
-// import buttonStyles from './Button.module.css';
 
 class ContactForm extends Component {
   state = {
@@ -15,8 +14,17 @@ class ContactForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    localStorage.setItem('contacts', JSON.stringify(this.props.contacts));
+    const { name, number } = this.state;
+    if (!name.trim() || !number.trim()) {
+      alert('Please enter both name and number.');
+      return;
+    }
+    this.props.onSubmit({ name, number });
+    // Sprawdź, czy this.props.contacts istnieje i jest tablicą
+    if (Array.isArray(this.props.contacts)) {
+      localStorage.setItem('contacts', JSON.stringify([...this.props.contacts, { name, number }]));
+    }
+    // Wyczyść stan formularza
     this.setState({ name: '', number: '' });
   };
 
